@@ -84,6 +84,10 @@
     {
       "key": "dni",
       "value": "87654321"
+    },
+    {
+      "key": "phone",
+      "value": "999333444"
     }
   ],
   "item": [
@@ -1058,6 +1062,103 @@
                 "{{recurring_id}}"
               ]
             }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ai",
+      "item": [
+        {
+          "name": "transfer (customer - tool calling)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"transfiere 50 soles al numero {{phone}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ai/transfer",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "transfer"
+              ]
+            },
+            "description": "Cliente: ejecuta una transferencia desde lenguaje natural usando tool calling.\n\nLa IA resuelve sola la cuenta origen (cuentas del usuario autenticado) y la cuenta destino. Para el destino puedes indicar:\n- telefono del destinatario (como Yape/Plin): \"transfiere 50 soles al numero 999333444\"\n- DNI del destinatario: \"transfiere 50 soles al DNI 87654321\"\n- numero de cuenta directo: \"transfiere 50 soles a la cuenta ACC-LUIS-001\"\n\nLa IA confirma el nombre enmascarado del titular antes de transferir."
+          }
+        },
+        {
+          "name": "report (admin - por moneda)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/report",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "report"
+              ]
+            },
+            "description": "Admin (ROLE_ADMIN): reporte de transferencias por moneda.\n- data: datos reales de la BD (TransferByCurrencyReport) para graficar.\n- insight: resumen y recomendacion generados por la IA (STRUCTURED OUTPUT, via .entity()).\n\nRespuesta:\n{\n  \"data\": [ { \"currency\": \"PEN\", \"totalTransfers\": 3, \"totalAmount\": 150.00 } ],\n  \"insight\": { \"resumen\": \"...\", \"recomendacion\": \"...\" }\n}"
+          }
+        },
+        {
+          "name": "support ingest (admin - RAG)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/ai/support/ingest",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "support",
+                "ingest"
+              ]
+            },
+            "description": "Admin (ROLE_ADMIN): carga los PDF de src/main/resources/docs/ al vector store (pgvector). Ejecutar UNA vez (o cuando cambien los documentos) antes de preguntar.\n\nRespuesta: { \"chunksIngested\": 12 }"
+          }
+        },
+        {
+          "name": "support ask (customer - RAG)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"cuanto cuesta una transferencia a otro banco?\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/ai/support/ask",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ai",
+                "support",
+                "ask"
+              ]
+            },
+            "description": "Cliente: pregunta de soporte respondida con los documentos (RAG). La IA busca los fragmentos mas parecidos en pgvector y responde SOLO con eso. Requiere haber ejecutado 'support ingest' antes."
           }
         }
       ]

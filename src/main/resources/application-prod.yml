@@ -1,8 +1,5 @@
 spring:
   datasource:
-    # La URL JDBC se arma con el host/puerto/nombre que Render inyecta desde
-    # la base de datos. Tambien puedes definir DB_URL directamente y tendra
-    # prioridad (util para una BD externa).
     url: ${DB_URL:jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME}}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}

@@ -17,7 +17,6 @@ import com.hampcode.pagoya.customer.repository.CustomerRepository;
 import com.hampcode.pagoya.customer.service.CurrentCustomerService;
 import com.hampcode.pagoya.shared.exception.BusinessRuleException;
 import com.hampcode.pagoya.shared.exception.ResourceNotFoundException;
-import com.hampcode.pagoya.shared.util.MaskUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -113,12 +112,24 @@ public class AccountService implements IAccountService {
     public List<RecipientAccountResponse> findRecipientAccountsByDni(String dni) {
         Customer recipient = customerRepository.findByDni(dni)
             .orElseThrow(() -> new ResourceNotFoundException("cliente no encontrado"));
-        String maskedName = MaskUtil.maskName(recipient.getFullName());
+        return toRecipientResponses(recipient);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<RecipientAccountResponse> findRecipientAccountsByPhone(String phone) {
+        Customer recipient = customerRepository.findByPhone(phone)
+            .orElseThrow(() -> new ResourceNotFoundException("cliente no encontrado"));
+        return toRecipientResponses(recipient);
+    }
+
+    private List<RecipientAccountResponse> toRecipientResponses(Customer recipient) {
+        String ownerName = recipient.getFullName();
         return accountRepository
             .findByCustomer_IdAndStatus(recipient.getId(), AccountStatus.ACTIVE)
             .stream()
             .map(account -> new RecipientAccountResponse(
-                account.getAccountNumber(), account.getType(), maskedName))
+                account.getAccountNumber(), account.getType(), ownerName))
             .toList();
     }
 

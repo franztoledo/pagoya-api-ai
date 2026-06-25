@@ -18,5 +18,6 @@ public interface IAccountService {
     Page<AccountResponse> findByCustomer(Long customerId, Pageable pageable);
     Page<AccountResponse> findMyAccounts(Pageable pageable);
     List<RecipientAccountResponse> findRecipientAccountsByDni(String dni);
+    List<RecipientAccountResponse> findRecipientAccountsByPhone(String phone);
     List<AccountSummaryReport> reportSummary();
 }

@@ -106,6 +106,18 @@ public class AccountController {
         return ResponseEntity.ok(accountService.findRecipientAccountsByDni(dni));
     }
 
+    @Operation(summary = "Buscar cuentas destino de un cliente por telefono (para transferir)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Cuentas activas del destinatario"),
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
+    })
+    @GetMapping("/recipient/by-phone")
+    public ResponseEntity<List<RecipientAccountResponse>> findRecipientByPhone(
+            @RequestParam String phone) {
+        return ResponseEntity.ok(accountService.findRecipientAccountsByPhone(phone));
+    }
+
     @Operation(summary = "Listar cuentas de un cliente por id (solo ADMIN)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Lista paginada de cuentas"),

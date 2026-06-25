@@ -9,6 +9,7 @@ import com.hampcode.pagoya.auth.model.User;
 import com.hampcode.pagoya.auth.repository.RoleRepository;
 import com.hampcode.pagoya.auth.repository.UserRepository;
 import com.hampcode.pagoya.customer.exception.DniAlreadyExistsException;
+import com.hampcode.pagoya.customer.exception.PhoneAlreadyExistsException;
 import com.hampcode.pagoya.customer.model.Customer;
 import com.hampcode.pagoya.customer.repository.CustomerRepository;
 import com.hampcode.pagoya.shared.exception.ResourceNotFoundException;
@@ -35,6 +36,9 @@ public class UserService implements IUserService {
         }
         if (customerRepository.existsByDni(request.dni())) {
             throw new DniAlreadyExistsException();
+        }
+        if (customerRepository.existsByPhone(request.phone())) {
+            throw new PhoneAlreadyExistsException();
         }
         Role role = roleRepository.findByName("CUSTOMER")
             .orElseThrow(() -> new ResourceNotFoundException(

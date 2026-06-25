@@ -63,3 +63,7 @@ services:
       #  Ej: https://mi-frontend.onrender.com
       - key: CORS_ALLOWED_ORIGINS
         sync: false
+
+      # --- Clave de OpenAI para el modulo de IA (la escribes en el dashboard) ---
+      - key: OPENAI_API_KEY
+        sync: false

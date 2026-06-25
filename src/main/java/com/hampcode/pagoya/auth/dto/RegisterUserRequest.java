@@ -19,6 +19,7 @@ public record RegisterUserRequest(
     @Pattern(regexp = "\\d{8}", message = "el DNI debe tener 8 digitos")
     String dni,
 
+    @NotBlank(message = "el telefono es obligatorio")
     @Pattern(regexp = "\\d{9}", message = "el telefono debe tener 9 digitos")
     String phone
 ) {}

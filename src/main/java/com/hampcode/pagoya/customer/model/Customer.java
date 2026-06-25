@@ -23,7 +23,7 @@ public class Customer {
     @Column(nullable = false, unique = true)
     private String dni;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String phone;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
